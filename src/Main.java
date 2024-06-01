@@ -2,19 +2,26 @@ import java.io.File;
 
 public class Main {
 	
-	private static String sourceFile;
 	private static File file;
-	private static Object inventory;
+	private static Object inventory;	
 	
-	private static void inventoryDefinition
+	/*
+	 * Define the path and filename of the data source,
+	 * as well as the data source's type,
+	 * and retrieve the data accordingly.
+	 */
+	public static void inventoryDefinition
 	(String source, int option) 
 			throws Exception {
 		
-		sourceFile = source;
-		file = new File( sourceFile );
+		file = new File( source );
 
 		switch (option) {
-
+		
+		/*
+		 * This data source is the Intcomex Jamaica
+		 * web store. It is type 1
+		 */
 		case 1:
 			inventory = new IntcomexInventory(file);
 			((IntcomexInventory) inventory).getProducts();
@@ -31,17 +38,8 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 
-		String srcFile = "C:\\Users\\peter_000\\"
-				+ "Downloads\\Monitors.htm";
+		new InventoryManagerGUI();		
 		
-		int sourceType = 1;
-		
-		inventoryDefinition(srcFile, sourceType);
-		
-		
-
-		// Extract each product from the HTML product listing
-
 
 	}
 }

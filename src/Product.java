@@ -22,7 +22,8 @@ public class Product {
 	private int product_Qty;
 	private double product_Cost;
 	private double current_FXRate;
-	private boolean isAvailable;
+	private boolean isAvailable;	
+	static String userName, currentPassword;
 
 	// Not accessible externally.
 	// Used internally for the conversion of the StringBuilder data type,
@@ -109,13 +110,15 @@ public class Product {
 	Product() {
 
 		// Establishing the connection to the product inventory database
+		// Password = !!P3d3lm@r2!!
 		try {
 			// Load MySQL JDBC Driver
 			Class.forName( "com.mysql.cj.jdbc.Driver" );
 
 			product_dbConnection = DriverManager.getConnection(
-					"jdbc:mysql://security/MESECT_eStoreDB",
-					"Petrodjan", "!!P3d3lm@r2!!" );
+					"jdbc:mysql://127.0.0.1/MESECT_eStoreDB",
+					userName, 
+					currentPassword );
 		}
 		catch (Exception e){
 
@@ -134,8 +137,9 @@ public class Product {
 			Class.forName( "com.mysql.cj.jdbc.Driver" );
 
 			product_dbConnection = DriverManager.getConnection(
-					"jdbc:mysql://security/MESECT_eStoreDB",
-					"Petrodjan", "!!P3d3lm@r2!!" );
+					"jdbc:mysql://127.0.0.1/MESECT_eStoreDB",
+					userName, 
+					currentPassword );
 
 		}
 		catch (Exception e){
@@ -272,7 +276,8 @@ public class Product {
 
 		product_dbConnection = DriverManager.getConnection(
 				"jdbc:mysql://security/MESECT_eStoreDB",
-				"Petrodjan", "!!P3d3lm@r2!!" );
+				userName, 
+				currentPassword);
 
 		sqlCmd = product_dbConnection.prepareStatement( findProduct_SQL );
 		sqlCmd.setString( 1, product_skuNumber );
@@ -313,7 +318,8 @@ public class Product {
 
 			product_dbConnection = DriverManager.getConnection(
 					"jdbc:mysql://security/MESECT_eStoreDB",
-					"Petrodjan", "!!P3d3lm@r2!!" );
+					userName, 
+					currentPassword);
 
 			sqlCmd = product_dbConnection.prepareStatement( findCategory_SQL );
 			sqlCmd.setObject( 1, product_Category );
@@ -385,7 +391,8 @@ public class Product {
 		
 		product_dbConnection = DriverManager.getConnection(
 				"jdbc:mysql://security/MESECT_eStoreDB",
-				"Petrodjan", "!!P3d3lm@r2!!" );
+				userName, 
+				currentPassword );
 		
 		sqlCmd = product_dbConnection.prepareStatement( findSupplier_SQL );
 		sqlCmd.setObject( 1, product_Supplier );
@@ -408,7 +415,8 @@ public class Product {
 		
 		product_dbConnection = DriverManager.getConnection(
 				"jdbc:mysql://security/MESECT_eStoreDB",
-				"Petrodjan", "!!P3d3lm@r2!!" );
+				userName, 
+				currentPassword );
 		
 		sqlCmd = product_dbConnection.prepareStatement( findCategory_SQL );
 		sqlCmd.setObject( 1, product_Category );
@@ -430,7 +438,8 @@ public class Product {
 		
 		product_dbConnection = DriverManager.getConnection(
 				"jdbc:mysql://security/MESECT_eStoreDB",
-				"Petrodjan", "!!P3d3lm@r2!!" );
+				userName, 
+				currentPassword );
 		
 		sqlCmd = product_dbConnection.prepareStatement( findBrand_SQL );
 		sqlCmd.setObject( 1, product_Brand );
