@@ -14,7 +14,7 @@ public class IntcomexInventory extends Product {
 	private static StringBuilder prodDetails = new StringBuilder();
 	private static Document products;
 	private static Elements productListings;
-	private static Product product = new Product();
+	//private static Product product = new Product();
 
 
 	/**
@@ -35,7 +35,7 @@ public class IntcomexInventory extends Product {
 		 */
 		rate = products.getElementsByClass("currency-menu").text();
 		rate = rate.substring(rate.indexOf("="),rate.length());
-		product.setFxRate(convertToMoney(rate));			
+		setFxRate(convertToMoney(rate));			
 
 		/*
 		 * Extracting the name of the supplier
@@ -44,27 +44,27 @@ public class IntcomexInventory extends Product {
 				.select( "title" )
 				.text();
 
-		product.setSupplier(supplier
+		setSupplier(supplier
 				.substring(0, supplier.indexOf( "-" ))
 				.trim());
 
 		// Check if the supplier exists in the database
-		product.checkSupplier();
+		checkSupplier();
 
 		/*
 		 * Extracting the name of the category for the product
 		 */
-		product.setCategory(products.getElementsByTag( "h2" ).text());
+		setCategory(products.getElementsByTag( "h2" ).text());
 
 		// Check if the product category exists in the database
-		product.checkCategory();
+		checkCategory();
 
 	}
 
 	/*
 	 * Convert string value of money to type double
 	 */
-	private static double convertToMoney(String productValue) {
+	private double convertToMoney(String productValue) {
 		double money = 0.00;
 
 		String dollars = "", priceStr = "";
@@ -90,7 +90,7 @@ public class IntcomexInventory extends Product {
 	 * Get the current product quantity 
 	 * and parse it as an integer.
 	 */
-	private static int productQuantity( String productAmount ) {
+	private int productQuantity( String productAmount ) {
 		int productsInStock = 0;
 
 		for ( char numElement : productAmount.toCharArray() ) {
@@ -109,7 +109,7 @@ public class IntcomexInventory extends Product {
 	/*
 	 *	 Get product attributes and details
 	 */
-	private static void productAttributes(Element productItem) {
+	private void productAttributes(Element productItem) {
 
 		Elements details = productItem
 				.select( ".visible-xs");
@@ -130,7 +130,7 @@ public class IntcomexInventory extends Product {
 				}				
 			}
 			
-			product.setProduct_AdditionalInfo(prodDetails);
+			setProduct_AdditionalInfo(prodDetails);
 		} 
 		else 
 		{
@@ -151,37 +151,37 @@ public class IntcomexInventory extends Product {
 
 		int prodCount = 0;
 
-		product.resetAvailability();
+		resetAvailability();
 		
 		for ( Element productListing : productListings ) {
 			if ( productListing.children().hasClass( "productArea" ) ) {
 
-				product.setImage(productListing
+				setImage(productListing
 						.children()
 						.select("img")
 						.attr( "src" ));						
 
-				product.setModelInfo(productListing
+				setModelInfo(productListing
 						.children()
 						.select( ".product-name" )
 						.text());
 
-				product.setDescription(productListing
+				setDescription(productListing
 						.children()
 						.select( ".description-name" )
 						.text());
 
-				product.setSkuNumber( productListing
+				setSkuNumber( productListing
 						.children()
 						.select( ".value").first()
 						.text());
 
-				product.setPartNumber( productListing
+				setPartNumber( productListing
 						.children()
 						.select( ".value").last()
 						.text());					
 
-				product.setBrand(productListing
+				setBrand(productListing
 						.children()
 						.select( ".marca" )
 						.text());
@@ -192,14 +192,14 @@ public class IntcomexInventory extends Product {
 						.text()
 						.trim();
 				
-				product.setCost(convertToMoney(prodPrice));
+				setCost(convertToMoney(prodPrice));
 
 				prodQTY = productListing
 						.children()
 						.select( ".availabilityGrid" )
 						.text();
 
-				product.setQuantity(productQuantity(prodQTY));
+				setQuantity(productQuantity(prodQTY));
 				
 				Element productDetails = productListing
 						.nextElementSibling();												
@@ -210,14 +210,14 @@ public class IntcomexInventory extends Product {
 						.indexOf( productListing ) + 1 )+ " Product # "
 						+ prodCount + " --------" );								
 
-				System.out.println( "Product category .....:\t"+product.getCategory() );
-				System.out.println( "Product Model Info ...:\t"+product.getModelInfo() );
-				System.out.println( "Product Image ........:\t"+product.getImage() );
-				System.out.println( "Product Brand ........:\t"+product.getBrand() );
-				System.out.println( "Product Description ..:\t"+product.getDescription() );
-				System.out.println( "Product Part Number ..:\t"+product.getPartNumber() );
-				System.out.println( "Product SKU Number ...:\t"+product.getSkuNumber());
-				System.out.println( "Product Supplier .....:\t"+product.getSupplier() );
+				System.out.println( "Product category .....:\t"+ getCategory() );
+				System.out.println( "Product Model Info ...:\t"+ getModelInfo() );
+				System.out.println( "Product Image ........:\t"+ getImage() );
+				System.out.println( "Product Brand ........:\t"+ getBrand() );
+				System.out.println( "Product Description ..:\t"+ getDescription() );
+				System.out.println( "Product Part Number ..:\t"+ getPartNumber() );
+				System.out.println( "Product SKU Number ...:\t"+ getSkuNumber());
+				System.out.println( "Product Supplier .....:\t"+ getSupplier() );
 
 				System.out.println("\n-------------- Product Details"
 						+ " --------------");
@@ -225,9 +225,9 @@ public class IntcomexInventory extends Product {
 				productAttributes( productDetails );
 				prodDetails.delete(0, prodDetails.length());
 
-				System.out.println( "\nExchange rate ........:\tJ$ " + product.getFXrate() );
-				System.out.println( "\nProduct Price ........:\tJ$ " + product.getCost() );
-				System.out.println( "\nQuantity in Stock ....:\t" + product.getQuantity() );
+				System.out.println( "\nExchange rate ........:\tJ$ " + getFXrate() );
+				System.out.println( "\nProduct Price ........:\tJ$ " + getCost() );
+				System.out.println( "\nQuantity in Stock ....:\t" + getQuantity() );
 
 				/*
 				 * Populate the database with product, 
@@ -238,14 +238,14 @@ public class IntcomexInventory extends Product {
 				// Enter code for populating and updating database here
 				// ...........
 
-				product.checkBrand();
+				checkBrand();
 
-				product.reviewProduct();
+				reviewProduct();
 			}
 
 			// inside the for loop, and outside the if condition
 		}
-		product.getDBConnection().close();
+		getDBConnection().close();
 	}
 
 
