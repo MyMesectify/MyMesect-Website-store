@@ -4,36 +4,68 @@
  */
 import java.io.File;
 import javax.swing.*;
-import java.awt.*;
+
+import java.awt.BorderLayout;
 import java.awt.event.*;
 
 
 public class InventoryManagerGUI {
 
-	public static Frame managerFrame;
-	private JSeparator sectionDivisor;
-	private JPanel dataConfigPanel, actionPanel, labelPanel;
-	private TextField usrnameField, pswdField;
-	private JLabel sectionLabel1, sectionLabel2, dbUsername, dbPassword;
-	private Button dbConnectButton, actionButton1, actionButton2, 
-	actionButton3, actionButton4, actionButton5, actionButton6;
+	public static JFrame managerFrame;
+	private JMenuBar managerMenuBar;
+	private JMenu databaseMenu, inventoryMenu, helpMenu;
+	private JMenuItem about, dbItem_1, dbItem_2, inventoryItem_1, inventoryItem_2;
+	private JPanel activePanel;
+	private JTextField usrnameField, pswdField;
+	
 		
 	InventoryManagerGUI ()
 	{
-		managerFrame = new Frame("MESECT Inventory Management Utility");
-		managerFrame.setSize(500,350);
-		sectionDivisor = new JSeparator();
-		dataConfigPanel = new JPanel();
-		dataConfigPanel.setSize(350,250);
-		actionPanel = new JPanel();
-		labelPanel = new JPanel();
-		//BorderLayout frameLayout = new BorderLayout();
-		GridBagLayout panelLayout = new GridBagLayout();
-		dataConfigPanel.setLayout(panelLayout);
-		actionPanel.setLayout(panelLayout);
-		//labelPanel.setLayout(panelLayout);
-		managerFrame.setLayout(panelLayout);
-		GridBagConstraints gbLimits = new GridBagConstraints();
+		// Menu items
+		about = new JMenuItem("About");
+		dbItem_1 = new JMenuItem("Configure");
+		dbItem_2 = new JMenuItem("Reset");
+		inventoryItem_1 = new JMenuItem("Import");
+		inventoryItem_2 = new JMenuItem("Update");
+		
+		// Menus
+		databaseMenu = new JMenu("Database");
+		inventoryMenu = new JMenu("Inventory");
+		helpMenu = new JMenu("Help");
+		
+		// Menu bar
+		managerMenuBar = new JMenuBar();
+		
+		
+		/*
+		 *  Laying out the manager window frame
+		 */
+		managerFrame = new JFrame("MESECT Online Store Inventory Management Utility");
+		managerFrame.setSize(600,400);
+		
+		// Add the menu items to their respective menus
+		
+
+		// About menu
+		helpMenu.add(about);
+		
+		// Database menu items
+		databaseMenu.add(dbItem_1);
+		databaseMenu.add(dbItem_2);
+		
+		// Inventory menu items
+		inventoryMenu.add(inventoryItem_1);
+		inventoryMenu.add(inventoryItem_2);
+		
+		// Add the menus to the menubar
+		managerMenuBar.add(databaseMenu);
+		managerMenuBar.add(inventoryMenu);
+		managerMenuBar.add(helpMenu);
+		
+		// Add the menu bar to the window frame
+		managerFrame.add(managerMenuBar, BorderLayout.NORTH);
+		managerFrame.setVisible(true);
+		
 		
 		/*
 		 * Add and configure event listener
@@ -45,135 +77,19 @@ public class InventoryManagerGUI {
 			}
 		});
 		
+		
+		
+		
 		/*
 		 * Configuring the connect button
 		 * to connect with database when it is clicked
 		 */
-		dbConnectButton = new Button("Connect");
-		dbConnectButton.setActionCommand("Connect");
-		dbConnectButton.addActionListener(new ButtonClicked());
+//		dbConnectButton = new Button("Connect");
+//		dbConnectButton.setActionCommand("Connect");
+//		dbConnectButton.addActionListener(new ButtonClicked());
 		
 		
-		/*
-		 * set label(s)
-		 */
-		sectionLabel1 = new JLabel("Database & Data Source");
-		sectionLabel2 = new JLabel("Inventory Maintenance Tasks");
-		dbUsername = new JLabel("Username:");
-		dbPassword = new JLabel("Password:");
-		dbUsername.setHorizontalAlignment(JLabel.RIGHT);
-		dbPassword.setHorizontalAlignment(JLabel.RIGHT);
-		
-		/*
-		 * set text fields
-		 * for database credentials
-		 */
-		usrnameField = new TextField("Petrodjan", 25);
-		pswdField = new TextField(25);
-		//usrnameField.setEnabled(false);
-		
-		/*
-		 * create the action buttons
-		 */
-		actionButton1 = new Button("Action 1");
-		actionButton2 = new Button("Action 2");
-		actionButton3 = new Button("Action 3");
-		actionButton4 = new Button("Action 4");
-		actionButton5 = new Button("Action 5");
-		actionButton6 = new Button("Action 6");
-		
-		
-		
-		/*
-		 * Set the layout the database credential
-		 * fields
-		 */
-		gbLimits.fill = GridBagConstraints.VERTICAL;
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 0;
-		dataConfigPanel.add(sectionLabel1, gbLimits);
-				
-		gbLimits.gridx = 0; 
-		gbLimits.gridy = 1; 
-		dataConfigPanel.add(sectionDivisor,
-				gbLimits);
-		 		
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 2;
-		dataConfigPanel.add(dbUsername, gbLimits);
-				
-		gbLimits.gridx = 1;
-		gbLimits.gridy = 2;
-		dataConfigPanel.add(usrnameField, gbLimits);
-				
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 3;
-		dataConfigPanel.add(dbPassword, gbLimits);
-				
-		gbLimits.gridx = 1;
-		gbLimits.gridy = 3;
-		dataConfigPanel.add(pswdField, gbLimits);
-		
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 4;
-		dataConfigPanel.add(dbConnectButton, gbLimits);
-		
-		
-		/*
-		 * Set the layout of the action buttons 
-		 */
-		
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 0;
-		labelPanel.add(sectionLabel2, gbLimits);
-		
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 1;
-		actionPanel.add(actionButton1, gbLimits);
-		
-		gbLimits.gridx = 1;
-		gbLimits.gridy = 1;
-		actionPanel.add(actionButton2, gbLimits);
-		
-		gbLimits.gridx = 2;
-		gbLimits.gridy = 1;
-		actionPanel.add(actionButton3, gbLimits);
-		
-		gbLimits.gridx = 3;
-		gbLimits.gridy = 1;
-		actionPanel.add(actionButton4, gbLimits);
-		
-		gbLimits.gridx = 1;
-		gbLimits.gridy = 2;
-		actionPanel.add(actionButton5, gbLimits);
-		
-		gbLimits.gridx = 2;
-		gbLimits.gridy = 2;
-		actionPanel.add(actionButton6, gbLimits);
-		
-		
-		/*
-		 * Layout the manager frame
-		 */
-			
-		//Add the database configuration panel
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 0;
-		managerFrame.add(dataConfigPanel, gbLimits);
-		
-		//Add section label as separator
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 1;
-		managerFrame.add(labelPanel, gbLimits);
-		
-		//Add the action buttons panel
-		gbLimits.gridx = 0;
-		gbLimits.gridy = 2;
-		managerFrame.add(actionPanel, gbLimits);
-		
-		//Show the manager frame with the panels
-		managerFrame.setVisible(true);
-		
+	// ********* END OF CONSTRUCTOR ***********
 	}
 	
 	/*
