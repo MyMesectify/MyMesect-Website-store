@@ -66,9 +66,10 @@ public class InventoryManagerGUI implements ActionListener {
 		// Add and configure action listener to manager window
 		managerFrame.addWindowListener(new WindowAdapter(){
 			@Override
-			public void windowClosing(WindowEvent e) {
+			public void windowClosing(WindowEvent e) 
+			{
 				System.exit(0);
-			}			
+			}
 		});		
 		
 		// Add action listener to menu selections
@@ -85,33 +86,46 @@ public class InventoryManagerGUI implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
+			// Open the database configuration window
 			if( e.getSource() == configure)
 			{
-				
+				new ConfigureDB(managerFrame);
 			}
 			
-			if( e.getSource() == configure)
-			{
-				
-			}
-			
+			// Open the reset database window
 			if( e.getSource() == reset)
 			{
-				
+				new Reset(managerFrame);
 			}
 			
+			// Open the import inventory window
 			if( e.getSource() == imporT)
 			{
-				
+				new ImportInventory(managerFrame);
 			}
 			
-			if( e.getSource() == about)
+			/// Open the database update window
+			if( e.getSource() == update)
 			{
+				new UpdateDB(managerFrame);
+			}
+			
+			// Open this window for information about the utility 
+			if( e.getSource() == about)
+			{				
+				JOptionPane.showMessageDialog(managerFrame, 
+						"This utility is used for acquiring\n"
+						+ "inventory details from MESECT's\n"
+						+ "suppliers, to populate and update\n"
+						+ "our online store.\n\n"
+						+ "Author: Peter D Morris");
 				
 			}
 		
 			
 		}
+
+	
 		
 		
 }
