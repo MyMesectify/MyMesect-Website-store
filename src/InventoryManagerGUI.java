@@ -13,8 +13,9 @@ public class InventoryManagerGUI implements ActionListener {
 	public static JFrame managerFrame;
 	private JMenuBar managerMenuBar;
 	private JMenu database, inventory, help;
-	private JMenuItem about, configure, reset, imporT, update;
-	private JPanel activePanel = new JPanel();
+	private JMenuItem about, configure, reset, imPort, upDate;
+	private JPanel displayPanel = new JPanel();
+	private JTable priceList;
 
 		
 	InventoryManagerGUI ()
@@ -30,8 +31,8 @@ public class InventoryManagerGUI implements ActionListener {
 		about = new JMenuItem("About");
 		configure = new JMenuItem("Configure");
 		reset = new JMenuItem("Reset");
-		imporT = new JMenuItem("Import");
-		update = new JMenuItem("Update");
+		imPort = new JMenuItem("Import");
+		upDate = new JMenuItem("Update");
 		
 		// Menus
 		database = new JMenu("Database");
@@ -52,8 +53,8 @@ public class InventoryManagerGUI implements ActionListener {
 		database.add(reset);
 		
 		// Inventory menu items
-		inventory.add(imporT);
-		inventory.add(update);
+		inventory.add(imPort);
+		inventory.add(upDate);
 		
 		// Add the menus to the menubar
 		managerMenuBar.add(database);
@@ -75,8 +76,8 @@ public class InventoryManagerGUI implements ActionListener {
 		// Add action listener to menu selections
 		configure.addActionListener(this);
 		reset.addActionListener(this);
-		imporT.addActionListener(this);
-		update.addActionListener(this);
+		imPort.addActionListener(this);
+		upDate.addActionListener(this);
 		about.addActionListener(this);
 		
 		managerFrame.setVisible(true);
@@ -99,18 +100,18 @@ public class InventoryManagerGUI implements ActionListener {
 			}
 			
 			// Open the import inventory window
-			if( e.getSource() == imporT)
+			if( e.getSource() == imPort)
 			{
 				new ImportInventory(managerFrame);
 			}
 			
 			/// Open the database update window
-			if( e.getSource() == update)
+			if( e.getSource() == upDate)
 			{
 				new UpdateDB(managerFrame);
 			}
 			
-			// Open this window for information about the utility 
+			// Open the about window for information about this utility 
 			if( e.getSource() == about)
 			{				
 				JOptionPane.showMessageDialog(managerFrame, 

@@ -2,9 +2,11 @@ import java.io.File;
 
 public class Main {
 	
-	public File inventorySourceFile, sqlFile;
-	//private Object inventory;
-	
+	public static File inventorySourceFile;
+	public File inventorySourcePath;
+	public File sqlFile;
+	public File sqlFilePath;
+ 
 	/*
 	 * Define the path and filename of the data source,
 	 * as well as the data source's type,
