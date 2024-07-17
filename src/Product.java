@@ -1,7 +1,6 @@
 
 import java.util.ArrayList;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 
@@ -23,7 +22,7 @@ public class Product {
 	private double product_Cost;
 	private double current_FXRate;
 	private boolean isAvailable;	
-	static String userName, currentPassword;
+	
 
 	// Not accessible externally.
 	// Used internally for the conversion of the StringBuilder data type,
@@ -33,7 +32,7 @@ public class Product {
 	/*
 	 * Connection to product inventory database
 	 */
-	private Connection product_dbConnection = null;
+	private static Connection product_dbConnection = null;
 
 	/*
 	 * SQL query & instructions pointer
@@ -111,18 +110,8 @@ public class Product {
 
 		// Establishing the connection to the product inventory database
 		// Password = !!P3d3lm@r2!!
-		try {
-			// Load MySQL JDBC Driver
-			Class.forName( "com.mysql.cj.jdbc.Driver" );
-
-			product_dbConnection = DriverManager.getConnection(
-					"jdbc:mysql://127.0.0.1/MESECT_eStoreDB",
-					userName, 
-					currentPassword );
-		}
-		catch (Exception e){
-
-		}
+		
+		setDBConnection();
 	}
 
 
@@ -132,19 +121,9 @@ public class Product {
 	 */
 	Product (ArrayList<Object> productItem) {
 
-		try {
-			// Load MySQL JDBC Driver
-			Class.forName( "com.mysql.cj.jdbc.Driver" );
+				
+		setDBConnection();
 
-			product_dbConnection = DriverManager.getConnection(
-					"jdbc:mysql://127.0.0.1/MESECT_eStoreDB",
-					userName, 
-					currentPassword );
-
-		}
-		catch (Exception e){
-
-		}
 
 		product_Category = (String) productItem.get(0);
 		product_Brand = (String) productItem.get(1);
@@ -265,19 +244,17 @@ public class Product {
 		return isAvailable;
 	}
 
-	public Connection getDBConnection() {
-		return product_dbConnection;
+	public static Connection setDBConnection() {
+		
+		return product_dbConnection = Main.getConnection();
 	}
 
 
 	public void reviewProduct() throws Exception {
 
 		product_MoreInfo = "";
-
-		product_dbConnection = DriverManager.getConnection(
-				"jdbc:mysql://security/MESECT_eStoreDB",
-				userName, 
-				currentPassword);
+		
+		setDBConnection();
 
 		sqlCmd = product_dbConnection.prepareStatement( findProduct_SQL );
 		sqlCmd.setString( 1, product_skuNumber );
@@ -315,12 +292,7 @@ public class Product {
 		else {
 
 			int product_CategoryID, product_BrandID, product_SupplierID;
-
-			product_dbConnection = DriverManager.getConnection(
-					"jdbc:mysql://security/MESECT_eStoreDB",
-					userName, 
-					currentPassword);
-
+			
 			sqlCmd = product_dbConnection.prepareStatement( findCategory_SQL );
 			sqlCmd.setObject( 1, product_Category );
 			sqlResult = sqlCmd.executeQuery();
@@ -366,6 +338,8 @@ public class Product {
 	public void resetAvailability() throws Exception {
 
 		int categoryID, supplierID;
+		
+		setDBConnection();
 
 		sqlCmd = product_dbConnection.prepareStatement( findCategory_SQL );
 		sqlCmd.setObject( 1, product_Category );
@@ -389,10 +363,7 @@ public class Product {
 
 	public void checkSupplier() throws Exception {
 		
-		product_dbConnection = DriverManager.getConnection(
-				"jdbc:mysql://security/MESECT_eStoreDB",
-				userName, 
-				currentPassword );
+		setDBConnection();
 		
 		sqlCmd = product_dbConnection.prepareStatement( findSupplier_SQL );
 		sqlCmd.setObject( 1, product_Supplier );
@@ -413,10 +384,7 @@ public class Product {
 	
 	public void checkCategory() throws Exception {
 		
-		product_dbConnection = DriverManager.getConnection(
-				"jdbc:mysql://security/MESECT_eStoreDB",
-				userName, 
-				currentPassword );
+		setDBConnection();
 		
 		sqlCmd = product_dbConnection.prepareStatement( findCategory_SQL );
 		sqlCmd.setObject( 1, product_Category );
@@ -436,10 +404,7 @@ public class Product {
 	
 	public void checkBrand() throws Exception {
 		
-		product_dbConnection = DriverManager.getConnection(
-				"jdbc:mysql://security/MESECT_eStoreDB",
-				userName, 
-				currentPassword );
+		setDBConnection();
 		
 		sqlCmd = product_dbConnection.prepareStatement( findBrand_SQL );
 		sqlCmd.setObject( 1, product_Brand );

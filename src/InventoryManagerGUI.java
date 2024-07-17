@@ -3,6 +3,8 @@
  * to the online store inventory database
  */
 import java.io.File;
+import java.sql.SQLException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -29,7 +31,7 @@ public class InventoryManagerGUI implements ActionListener {
 		
 		// Menu items
 		about = new JMenuItem("About");
-		configure = new JMenuItem("Configure");
+		configure = new JMenuItem("Connect");
 		reset = new JMenuItem("Reset");
 		imPort = new JMenuItem("Import");
 		upDate = new JMenuItem("Update");
@@ -96,7 +98,13 @@ public class InventoryManagerGUI implements ActionListener {
 			// Open the reset database window
 			if( e.getSource() == reset)
 			{
-				new Reset(managerFrame);
+				//new Reset(managerFrame);
+				try {
+					Main.dbConnection.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			
 			// Open the import inventory window

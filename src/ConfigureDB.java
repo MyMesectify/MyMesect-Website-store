@@ -1,32 +1,26 @@
 import javax.swing.*;
-import javax.swing.GroupLayout.Alignment;
-
-import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class ConfigureDB extends JDialog implements ActionListener {
 
-	private JFrame parent;
-	private static String dbFile, dbPath, dbUser, dbUserPassword;
-	
 	// Create components for this window
-	JPanel dbDetailsPanel = new JPanel();
+	JPanel dbConnectPanel = new JPanel();
 	private JButton findFile = new JButton("Find");
-	private JButton connectDB = new JButton("Test connection");
-	private JLabel dbFileName, userName, userPassword;
-	private JTextField fileName, usrName, password;
+	private JButton connectDB = new JButton("Connect");
+	private JLabel userName, userPassword, statusInfo;
+	private JTextField usrName, password;
 	
 	ConfigureDB (JFrame parent)
-	{
-		this.parent = parent;
-		setSize(400, 250);
+	{	
+		
+		setSize(400, 140);
 		setModal(true);
-		setTitle("Configure database");
+		setTitle("Connect database");
 		
 		// Assign layout manager(s) to organize components
-		GroupLayout layoutView = new GroupLayout(dbDetailsPanel);
-		dbDetailsPanel.setLayout(layoutView);
+		GroupLayout layoutView = new GroupLayout(dbConnectPanel);
+		dbConnectPanel.setLayout(layoutView);
 		layoutView.setAutoCreateContainerGaps(true);
 		layoutView.setAutoCreateGaps(true);
 		
@@ -37,13 +31,12 @@ public class ConfigureDB extends JDialog implements ActionListener {
 		 * and connection string details 
 		*/ 
 				
-		// Create and configure components
-		fileName = new JTextField();
+		// Create and configure components		
 		usrName = new JTextField();
 		password = new JTextField();
-		dbFileName = new JLabel("File :"); 
-		userName = new JLabel("User :");
-		userPassword = new JLabel("Pasword :");
+		userName = new JLabel("User:");
+		userPassword = new JLabel("Pasword:");
+		statusInfo = new JLabel("Waiting for connection...");
 		
 		/* 
 		 * 	Add components to panel using GroupLayout
@@ -54,22 +47,17 @@ public class ConfigureDB extends JDialog implements ActionListener {
 				layoutView.createSequentialGroup()
 									
 				// First column of components
-				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(dbFileName)
+				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.TRAILING)
 						.addComponent(userName)
 						.addComponent(userPassword)
+						.addComponent(connectDB)
 						)
 				
 				// Second column of components
-				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(fileName)
+				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.LEADING)						
 						.addComponent(usrName)
 						.addComponent(password)
-						)
-				
-				// Third column of components
-				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(findFile)
+						.addComponent(statusInfo)
 						)
 				
 				);
@@ -77,38 +65,34 @@ public class ConfigureDB extends JDialog implements ActionListener {
 		// Add vertical grouping
 		layoutView.setVerticalGroup(layoutView.createSequentialGroup()
 				
-				// First row of components
+				// First row of components				
 				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(dbFileName)
-						.addComponent(fileName)
-						.addComponent(findFile)
+						.addComponent(userName)
+						.addComponent(usrName)						
 						)
 				
 				// Second row of components
 				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(userName)
-						.addComponent(usrName)
+						.addComponent(userPassword)
+						.addComponent(password)
 						)
 				
 				// Third row of components
 				.addGroup(layoutView.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(userPassword)
-						.addComponent(password)						
+						.addComponent(connectDB)
+						.addComponent(statusInfo)						
 						)
 				);
 		
 				
 	
-		add(dbDetailsPanel);
-		add(connectDB, BorderLayout.SOUTH);
+		add(dbConnectPanel);
 		
 		// Add action listener to JButton(s)
 		connectDB.addActionListener(this);
 		findFile.addActionListener(this);
 
-		setVisible(true);
-		
-		
+		setVisible(true);		
 		
 	}
 
@@ -119,7 +103,9 @@ public class ConfigureDB extends JDialog implements ActionListener {
 		
 		if ( e.getSource() == connectDB )
 		{
-			System.out.print("Connect to database\n");
+			Main.userName = usrName.getText();
+			Main.userPassword = password.getText();
+			statusInfo.setText(Main.setConnection());
 		}
 		
 		if ( e.getSource() == findFile )
@@ -127,5 +113,7 @@ public class ConfigureDB extends JDialog implements ActionListener {
 			System.out.print("Find file\n");
 		}
 	}
+	
+	
 	
 }

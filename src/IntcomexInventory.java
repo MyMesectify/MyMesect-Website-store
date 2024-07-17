@@ -1,5 +1,6 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.jsoup.safety.Safelist;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.File;
@@ -26,16 +27,31 @@ public class IntcomexInventory extends Product {
 	 */
 	IntcomexInventory(File inventoryFile) throws Exception {
 		
+		Document checkDoc = Jsoup.parse(inventoryFile, "UTF-8");
+		String cleanDoc = Jsoup.clean(checkDoc.html(), Safelist.relaxed());
+		
 		// Set the location of the HTML file holding the data to be web scraped		
-		products = Jsoup.parse(inventoryFile, "utf-8");
+		products = Jsoup.parse(cleanDoc);
 		productListings = products.getElementsByTag("form");
+		
+		// price of product is to be extracted,
+		// and stored in rate
+		
+		System.out.print(cleanDoc);
 		
 		/* Get the exchange rate, and convert to the double data type,
 		 * with 2 decimal places.
 		 */
-		rate = products.getElementsByClass("currency-menu").text();
-		rate = rate.substring(rate.indexOf("="),rate.length());
-		setFxRate(convertToMoney(rate));			
+		Element dollarValue = products.select("span#text-black").first();
+		if( dollarValue != null )
+		{
+			rate = dollarValue.text().substring(rate.indexOf("="),rate.length());
+			setFxRate(convertToMoney(rate));
+			System.out.println( "The value is: " + rate );
+		} else
+		{
+			System.out.println( "No value was found" );
+		}
 
 		/*
 		 * Extracting the name of the supplier
@@ -245,7 +261,8 @@ public class IntcomexInventory extends Product {
 
 			// inside the for loop, and outside the if condition
 		}
-		getDBConnection().close();
+		
+		//setDBConnection().close();
 	}
 
 
