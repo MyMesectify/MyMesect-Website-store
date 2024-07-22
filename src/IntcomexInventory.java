@@ -1,9 +1,11 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.jsoup.safety.Safelist;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.File;
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
 
 public class IntcomexInventory extends Product {
 
@@ -27,31 +29,24 @@ public class IntcomexInventory extends Product {
 	 */
 	IntcomexInventory(File inventoryFile) throws Exception {
 		
-		Document checkDoc = Jsoup.parse(inventoryFile, "UTF-8");
-		String cleanDoc = Jsoup.clean(checkDoc.html(), Safelist.relaxed());
-		
-		// Set the location of the HTML file holding the data to be web scraped		
-		products = Jsoup.parse(cleanDoc);
+		ReadhtmlSource htmlReader = new ReadhtmlSource(inventoryFile);
+		String content = htmlReader.getHTMLFileContent().toString();	
+		products = Jsoup.parse(content);
 		productListings = products.getElementsByTag("form");
 		
 		// price of product is to be extracted,
 		// and stored in rate
-		
-		System.out.print(cleanDoc);
+		rate = products.select("span[id=lblTicker].text-black")
+				.text()
+				.trim();
+		rate = rate.substring(rate.indexOf("=") + 1, rate.indexOf(".") + 3).trim();
+		rate = rate.substring(rate.indexOf("$") + 1, rate.length()).trim();
+
 		
 		/* Get the exchange rate, and convert to the double data type,
 		 * with 2 decimal places.
 		 */
-		Element dollarValue = products.select("span#text-black").first();
-		if( dollarValue != null )
-		{
-			rate = dollarValue.text().substring(rate.indexOf("="),rate.length());
-			setFxRate(convertToMoney(rate));
-			System.out.println( "The value is: " + rate );
-		} else
-		{
-			System.out.println( "No value was found" );
-		}
+			setFxRate(convertToMoney(rate));	
 
 		/*
 		 * Extracting the name of the supplier
@@ -172,10 +167,7 @@ public class IntcomexInventory extends Product {
 		for ( Element productListing : productListings ) {
 			if ( productListing.children().hasClass( "productArea" ) ) {
 
-				setImage(productListing
-						.children()
-						.select("img")
-						.attr( "src" ));						
+				setImage(getProductImage(productListing));					
 
 				setModelInfo(productListing
 						.children()
@@ -208,7 +200,10 @@ public class IntcomexInventory extends Product {
 						.text()
 						.trim();
 				
-				setCost(convertToMoney(prodPrice));
+				double usCost = convertToMoney(prodPrice);
+				double jmdCost = usCost * getFXrate();
+				
+				setCost( jmdCost );
 
 				prodQTY = productListing
 						.children()
@@ -264,6 +259,70 @@ public class IntcomexInventory extends Product {
 		
 		//setDBConnection().close();
 	}
+
+	 private String getProductImage(Element productListing) throws IOException {
+	        String imageName, imageLink = null;
+
+	        // Get the URL where the image can be found
+	        String imageSource = productListing
+	                .children()
+	                .select("div a")
+	                .attr("href");
+
+	        // Get the name of the product image file to search for
+	        imageName = productListing
+	                .children()
+	                .select("img")
+	                .attr("src");
+
+	        // Extract only the necessary part of the product image file
+	        if (imageName != null && !imageName.isEmpty()) {
+	            imageName = imageName.substring(imageName.lastIndexOf("/") + 1);
+	            if ( imageName.equalsIgnoreCase("noimage.jpg"))
+	            {
+	            	return "https://store.intcomex.com/Content/Images/" + imageName;
+	            }
+//	            System.out.println("This is the name of the product: " + imageName);
+	        } else {
+//	            System.out.println("No image found in the product listing.");
+	            return null;
+	        }
+
+	        // Connect with the URL where the image can be found, and store the content as a document
+	        ReadhtmlSource sourcePageHtml;
+	        try 
+	        {
+	            sourcePageHtml = new ReadhtmlSource(imageSource);
+	        } 
+	        catch (IOException e) 
+	        {
+	            JOptionPane.showMessageDialog(null, e);
+	            return null;
+	        }
+
+	        String pageHtml = sourcePageHtml.getHTMLFileContent().toString();
+	        Document doc = Jsoup.parse(pageHtml);
+
+	        // Print the HTML code for debugging purposes
+	        // Capture the HTML source code for the URL where the image can be found
+	        // Parse the HTML code, and store as a different Elements
+	        Elements links = doc.select("span+a");
+
+	        for (Element link : links) {
+	            String href = link.attr("href");
+	            if (href.contains(imageName)) {
+	                imageLink = href;
+	                break;
+	            }
+	        }
+
+	        if (imageLink != null) {
+	            return imageLink;
+	        } else {
+	            return "https://store.intcomex.com/images/products/" + imageName;
+	        }
+
+	    }
 
 
 
